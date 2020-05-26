@@ -42,3 +42,7 @@ export const Severity: any = {
   WARN: 1,
   ERROR: 2,
 };
+
+export declare type Ref<T> = T;
+
+export declare type DocumentType<T> = T;
