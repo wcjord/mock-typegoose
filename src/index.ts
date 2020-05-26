@@ -9,15 +9,15 @@
 //   return (target: any, key: string) => {};
 // };
 
-// export var pangeaArrayProp: typeof arrayProp = (...args) => {
+// export var arrayProp: typeof arrayProp = (...args) => {
 //   return (target: any, key: string) => {};
 // };
 
-// export var pangeaMapProp: typeof mapProp = (...args) => {
+// export var mapProp: typeof mapProp = (...args) => {
 //   return (target: any, key: string) => {};
 // };
 
-// export var pangeaModelOptions: typeof modelOptions = (...args) => {
+// export var modelOptions: typeof modelOptions = (...args) => {
 //   return (target: any) => {};
 // };
 
@@ -37,7 +37,7 @@ export var modelOptions = (...args) => {
   return (target: any) => {};
 };
 
-export const PangeaSeverity: any = {
+export const Severity: any = {
   ALLOW: 0,
   WARN: 1,
   ERROR: 2,

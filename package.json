@@ -20,9 +20,5 @@
     "url": "https://github.com/wcjord/mock-typegoose/issues"
   },
   "homepage": "https://github.com/wcjord/mock-typegoose#readme",
-  "dependencies": {
-    "@typegoose/typegoose": "^7.1.3",
-    "@types/mongoose": "^5.7.21",
-    "mongoose": "^5.9.16"
-  }
+  "dependencies": {}
 }
