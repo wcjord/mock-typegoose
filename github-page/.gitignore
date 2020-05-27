@@ -1,0 +1,7 @@
+# Please don't forget to modify "travis-.gitignore" too!
+
+_site/
+.sass-cache/
+.jekyll-metadata/
+
+typedoc/
