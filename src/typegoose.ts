@@ -4,12 +4,20 @@ import 'reflect-metadata';
 import { lt } from 'semver';
 
 /* istanbul ignore next */
+<<<<<<< HEAD
 if (mongoose && mongoose.version && lt(mongoose.version, '5.9.14')) {
+=======
+if (lt(mongoose?.version, '5.9.14')) {
+>>>>>>> 3c4a220a1c5f21cb96e6d4e66c8d41521fac873b
   throw new Error('Please use mongoose 5.9.14 or higher');
 }
 
 /* istanbul ignore next */
+<<<<<<< HEAD
 if (process && process.version && lt(process.version.slice(1), '10.15.0')) {
+=======
+if (lt(process?.version.slice(1), '10.15.0')) {
+>>>>>>> 3c4a220a1c5f21cb96e6d4e66c8d41521fac873b
   logger.warn('You are using a NodeJS Version below 10.15.0, Please Upgrade!');
 }
 
