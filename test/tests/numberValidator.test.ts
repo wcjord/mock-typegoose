@@ -1,4 +1,4 @@
-import * as mongoose from 'mongoose';
+import { Error } from 'mongoose';
 
 import { NumberValidatorEnum, NumberValidatorsModel } from '../models/numberValidators';
 
@@ -9,7 +9,7 @@ it('should respect max', async () => {
     NumberValidatorsModel.create({
       max: 4 // over 3
     })
-  ).rejects.toBeInstanceOf(mongoose.Error.ValidationError);
+  ).rejects.toBeInstanceOf(Error.ValidationError);
 });
 
 it('should respect min', async () => {
@@ -17,7 +17,7 @@ it('should respect min', async () => {
     NumberValidatorsModel.create({
       min: 9 // under 10
     })
-  ).rejects.toBeInstanceOf(mongoose.Error.ValidationError);
+  ).rejects.toBeInstanceOf(Error.ValidationError);
 });
 
 it('should respect enum', async () => {
@@ -28,7 +28,7 @@ it('should respect enum', async () => {
 
     fail('Expected to throw ValidationError!');
   } catch (err) {
-    expect(err).toBeInstanceOf(mongoose.Error.ValidationError);
+    expect(err).toBeInstanceOf(Error.ValidationError);
   }
 
   const doc = await NumberValidatorsModel.create({

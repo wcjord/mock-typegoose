@@ -1,4 +1,4 @@
-import * as mongoose from 'mongoose';
+import { Model } from 'mongoose';
 
 import { isNullOrUndefined } from './internal/utils';
 import type { DocumentType, Ref, RefType } from './types';
@@ -8,7 +8,7 @@ import type { DocumentType, Ref, RefType } from './types';
  * @param doc The Ref with uncertain type
  */
 export function isDocument<T, S extends RefType>(doc: Ref<T, S>): doc is DocumentType<NonNullable<T>> {
-  return doc instanceof mongoose.Model;
+  return doc instanceof Model;
 }
 
 /**
@@ -39,6 +39,6 @@ export function isRefTypeArray<T, S extends RefType>(docs: Ref<T, S>[]): docs is
  * Check if the input is a mongoose.Model
  * @param model The Value to check
  */
-export function isModel(model: any): model is mongoose.Model<any> {
-  return model?.prototype instanceof mongoose.Model;
+export function isModel(model: any): model is Model<any> {
+  return model?.prototype instanceof Model;
 }

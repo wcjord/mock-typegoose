@@ -1,4 +1,4 @@
-import * as mongoose from 'mongoose';
+import { Types, Error } from 'mongoose';
 
 import { getClassForDocument, isDocument } from '../../src/typegoose';
 import { Genders } from '../enums/genders';
@@ -11,7 +11,7 @@ import { User, UserModel } from '../models/user';
 it('should return correct class type for document', async () => {
   const car = await CarModel.create({
     carModel: 'Tesla',
-    price: mongoose.Types.Decimal128.fromString('50123.25')
+    price: Types.Decimal128.fromString('50123.25')
   });
   const carReflectedType = getClassForDocument(car);
   expect(carReflectedType).toEqual(Car);
@@ -36,7 +36,7 @@ it('should use inherited schema', async () => {
 
   const car = await CarModel.create({
     carModel: 'Tesla',
-    price: mongoose.Types.Decimal128.fromString('50123.25')
+    price: Types.Decimal128.fromString('50123.25')
   });
   await user.addCar(car);
 
@@ -95,14 +95,14 @@ it('should validate Decimal128', async () => {
     });
     fail('Validation must fail.');
   } catch (e) {
-    expect(e).toBeInstanceOf(mongoose.Error.ValidationError);
+    expect(e).toBeInstanceOf(Error.ValidationError);
   }
   const car = await CarModel.create({
     carModel: 'Tesla',
-    price: mongoose.Types.Decimal128.fromString('123.45')
+    price: Types.Decimal128.fromString('123.45')
   });
   const foundCar = await CarModel.findById(car._id).orFail().exec();
-  expect(foundCar.price).toBeInstanceOf(mongoose.Types.Decimal128);
+  expect(foundCar.price).toBeInstanceOf(Types.Decimal128);
   expect(foundCar.price.toString()).toEqual('123.45');
 });
 
@@ -113,8 +113,9 @@ it('should validate email', async () => {
     });
     fail('Validation must fail.');
   } catch (e) {
-    expect(e).toBeInstanceOf(mongoose.Error.ValidationError);
-    expect(e.message).toEqual(// test it specifically, to know that it is not another error
+    expect(e).toBeInstanceOf(Error.ValidationError);
+    expect(e.message).toEqual(
+      // test it specifically, to know that it is not another error
       'Person validation failed: email: Validator failed for path `email` with value `email`'
     );
   }
@@ -129,8 +130,9 @@ it(`should Validate Map`, async () => {
     });
     fail('Validation should Fail');
   } catch (e) {
-    expect(e).toBeInstanceOf(mongoose.Error.ValidationError);
-    expect(e.message).toEqual(// test it specifically, to know that it is not another error
+    expect(e).toBeInstanceOf(Error.ValidationError);
+    expect(e.message).toEqual(
+      // test it specifically, to know that it is not another error
       'InternetUser validation failed: projects.p1: `project` is not a valid enum value for path `projects.p1`.'
     );
   }

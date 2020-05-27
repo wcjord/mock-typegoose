@@ -1,4 +1,4 @@
-import * as mongoose from 'mongoose';
+import { Types, Schema } from 'mongoose';
 
 import { assertion, getName } from '../../src/internal/utils';
 import { getModelForClass, isDocument, isDocumentArray, prop, Ref } from '../../src/typegoose';
@@ -177,8 +177,8 @@ it('check reference with buffer _id', async () => {
 
 it('check typeguards', async () => {
   const idFields = await RefTestModel.create({
-    refField: mongoose.Types.ObjectId(),
-    refArray: [mongoose.Types.ObjectId()],
+    refField: Types.ObjectId(),
+    refArray: [Types.ObjectId()],
     refFieldString: 'test1',
     refArrayString: ['test1', 'test2'],
     refFieldNumber: 1234,
@@ -255,19 +255,19 @@ it('should make use of arrow-function returning ref-type', async () => {
   assertion(isDocument(found.nested));
   expect(found.nested!.someNestedProperty).toEqual('Hello');
 
-  expect(MainModel.schema.path('nested')).toBeInstanceOf(mongoose.Schema.Types.ObjectId);
+  expect(MainModel.schema.path('nested')).toBeInstanceOf(Schema.Types.ObjectId);
   expect((MainModel.schema.path('nested') as any).options.ref).toEqual(getName(Nested));
 });
 
-it('reference arrays should work with mongoose.Types.Array<Ref<T>>', async () => {
+it('reference arrays should work with Types.Array<Ref<T>>', async () => {
   const stringdoc = await RefTestStringModel.create({ _id: 'm.t.a<r>' });
   const doc = await RefTestArrayTypesModel.create({ array: [stringdoc, stringdoc] });
   const found = await RefTestArrayTypesModel.findById(doc._id).orFail().exec();
 
   expect(found.toObject()).toEqual(doc.depopulate('array').toObject());
   const schemaPath: any = RefTestArrayTypesModel.schema.path('array');
-  expect(schemaPath).toBeInstanceOf(mongoose.Schema.Types.Array);
-  expect(schemaPath.caster).toBeInstanceOf(mongoose.Schema.Types.String);
+  expect(schemaPath).toBeInstanceOf(Schema.Types.Array);
+  expect(schemaPath.caster).toBeInstanceOf(Schema.Types.String);
 
   expect(Array.from(found.array!.toObject())).toEqual([stringdoc._id, stringdoc._id]);
 });

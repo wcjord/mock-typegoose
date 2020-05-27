@@ -1,4 +1,4 @@
-import * as fs from 'fs';
+import { existsSync, readFileSync } from 'fs';
 
 interface IConfig {
   Memory: boolean;
@@ -21,26 +21,24 @@ enum EConfig {
   MONGODB_AUTH = 'You should activate & use MongoDB Authentication!'
 }
 
-const env: NodeJS.ProcessEnv = process.env; // just to write less
+const env = process ? process.env : null; // just to write less
 
-let path: string = env.CONFIG ?? './test/config.json';
-path = fs.existsSync(path) ? path : './test/config_default.json';
+let path: string = env?.CONFIG ?? './test/config.json';
+path = existsSync(path) ? path : './test/config_default.json';
 
-const configRAW: Readonly<IConfig> =
-  JSON.parse(fs.readFileSync(path).toString());
+const configRAW: Readonly<IConfig> = JSON.parse(readFileSync(path).toString());
 
 // ENV || CONFIG-FILE || DEFAULT
 const configFINAL: Readonly<IConfig> = {
-  Memory: env.C_USE_IN_MEMORY !== undefined ||
-    (typeof configRAW.Memory === 'boolean' ? configRAW.Memory : true),
-  DataBase: env.C_DATABASE ?? configRAW?.DataBase ?? 'typegooseTest',
-  Port: parseInt(env.C_PORT as string, 10) || configRAW.Port || 27017,
+  Memory: env?.C_USE_IN_MEMORY !== undefined || (typeof configRAW.Memory === 'boolean' ? configRAW.Memory : true),
+  DataBase: env?.C_DATABASE ?? configRAW?.DataBase ?? 'typegooseTest',
+  Port: parseInt(env?.C_PORT as string, 10) || configRAW.Port || 27017,
   Auth: {
-    User: env.C_AUTH_USER ?? configRAW?.Auth?.User ?? '',
-    Passwd: env.C_AUTH_PASSWD || configRAW?.Auth?.Passwd || '',
-    DB: env.C_AUTH_DB || configRAW?.Auth?.DB || ''
+    User: env?.C_AUTH_USER ?? configRAW?.Auth?.User ?? '',
+    Passwd: env?.C_AUTH_PASSWD || configRAW?.Auth?.Passwd || '',
+    DB: env?.C_AUTH_DB || configRAW?.Auth?.DB || ''
   },
-  IP: env.C_IP ?? configRAW.IP ?? 'localhost'
+  IP: env?.C_IP ?? configRAW.IP ?? 'localhost'
 };
 
 /** Small callback for the tests below */
@@ -51,9 +49,15 @@ function cb(text: string): void {
 }
 
 if (!configFINAL.Memory) {
-  if (!configFINAL.IP) { cb(EConfig.MONGODB_IP); }
-  if (!configFINAL.DataBase) { cb(EConfig.MONGODB_DB); }
-  if (!configFINAL.Port) { cb(EConfig.MONGODB_PORT); }
+  if (!configFINAL.IP) {
+    cb(EConfig.MONGODB_IP);
+  }
+  if (!configFINAL.DataBase) {
+    cb(EConfig.MONGODB_DB);
+  }
+  if (!configFINAL.Port) {
+    cb(EConfig.MONGODB_PORT);
+  }
 }
 
 export { configFINAL as config };

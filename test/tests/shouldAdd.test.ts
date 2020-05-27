@@ -1,4 +1,4 @@
-import * as mongoose from 'mongoose';
+import { Types, Schema } from 'mongoose';
 
 import { arrayProp, buildSchema, getClass, getModelForClass, getName, isDocumentArray, mapProp, prop, Ref } from '../../src/typegoose';
 import { Genders } from '../enums/genders';
@@ -48,7 +48,7 @@ it('should add and populate the virtual properties', async () => {
   } as Partial<VirtualSub>);
   const virtualsub2 = await VirtualSubModel.create({
     dummy: 'virtualSub2',
-    virtual: mongoose.Types.ObjectId() as Ref<any>
+    virtual: Types.ObjectId() as Ref<any>
   } as Partial<VirtualSub>);
   const virtualsub3 = await VirtualSubModel.create({
     dummy: 'virtualSub3',
@@ -204,7 +204,7 @@ it('should make use of non-virtuals with pre- and post-processors', async () => 
 });
 
 it('should add options to ref [szokodiakos#379]', () => {
-  class T { }
+  class T {}
   class TestRef {
     @prop({ ref: T, customoption: 'custom' })
     public someprop: Ref<T>;
@@ -222,7 +222,7 @@ it('should add options to ref [szokodiakos#379]', () => {
 });
 
 it('should add options to refPath [szokodiakos#379]', () => {
-  class T { }
+  class T {}
   class TestRefPath {
     @prop({ default: 'T' })
     public something: string;
@@ -243,7 +243,7 @@ it('should add options to refPath [szokodiakos#379]', () => {
 });
 
 it('should add options to array-ref [szokodiakos#379]', () => {
-  class T { }
+  class T {}
   class TestArrayRef {
     @arrayProp({ ref: T, customoption: 'custom' })
     public someprop: Ref<T>[];
@@ -261,7 +261,7 @@ it('should add options to array-ref [szokodiakos#379]', () => {
 });
 
 it('should add options to array-refPath [szokodiakos#379]', () => {
-  class EmptyClass { }
+  class EmptyClass {}
   class TestArrayRefPath {
     @prop({ default: getName(EmptyClass) })
     public something: string;
@@ -274,7 +274,7 @@ it('should add options to array-refPath [szokodiakos#379]', () => {
   const someprop = schema.path('someprop');
   expect(schema).not.toBeUndefined();
   expect(someprop).not.toBeUndefined();
-  expect(someprop).toBeInstanceOf(mongoose.Schema.Types.Array);
+  expect(someprop).toBeInstanceOf(Schema.Types.Array);
   // @ts-expect-error
   const opt: any = someprop.options.type[0];
   expect(typeof opt.type).toEqual('function');
@@ -367,8 +367,8 @@ it('should set innerOptions correctly', () => {
   const schema = buildSchema(InnerOptions);
   const path: any = schema.path('someArray');
 
-  expect(path).toBeInstanceOf(mongoose.Schema.Types.Array);
-  expect(path.caster).toBeInstanceOf(mongoose.Schema.Types.String);
+  expect(path).toBeInstanceOf(Schema.Types.Array);
+  expect(path.caster).toBeInstanceOf(Schema.Types.String);
   expect(path.caster.options).toHaveProperty('hello', true);
   expect(path.options).not.toHaveProperty('hello', true);
 });
@@ -382,8 +382,8 @@ it('should set outerOptions correctly', () => {
   const schema = buildSchema(OuterOptions);
   const path: any = schema.path('someArray');
 
-  expect(path).toBeInstanceOf(mongoose.Schema.Types.Array);
-  expect(path.caster).toBeInstanceOf(mongoose.Schema.Types.String);
+  expect(path).toBeInstanceOf(Schema.Types.Array);
+  expect(path.caster).toBeInstanceOf(Schema.Types.String);
   expect(path.caster.options).not.toHaveProperty('hello', true);
   expect(path.options).toHaveProperty('hello', true);
 });

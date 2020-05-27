@@ -1,4 +1,4 @@
-import * as mongoose from 'mongoose';
+import { Schema, SchemaOptions } from 'mongoose';
 
 import { logger } from '../logSettings';
 import { _buildPropMetadata } from '../prop';
@@ -26,12 +26,7 @@ import { assertionIsClass, assignGlobalModelOptions, getName, isNullOrUndefined,
  * @returns Returns the Build Schema
  * @private
  */
-export function _buildSchema<U extends AnyParamConstructor<any>>(
-  cl: U,
-  sch?: mongoose.Schema,
-  opt?: mongoose.SchemaOptions,
-  isFinalSchema: boolean = true
-) {
+export function _buildSchema<U extends AnyParamConstructor<any>>(cl: U, sch?: Schema, opt?: SchemaOptions, isFinalSchema: boolean = true) {
   assertionIsClass(cl);
 
   assignGlobalModelOptions(cl); // to ensure global options are applied to the current class
@@ -44,7 +39,6 @@ export function _buildSchema<U extends AnyParamConstructor<any>>(
   logger.debug('_buildSchema Called for %s with options:', name, opt);
 
   /** Simplify the usage */
-  const Schema = mongoose.Schema;
   const ropt: IModelOptions = Reflect.getMetadata(DecoratorKeys.ModelOptions, cl) ?? {};
   const schemaOptions = Object.assign(ropt?.schemaOptions ?? {}, opt);
 

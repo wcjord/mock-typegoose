@@ -1,4 +1,4 @@
-import * as mongoose from 'mongoose';
+import { Error } from 'mongoose';
 
 import { StringValidatorEnum, StringValidatorsModel } from '../models/stringValidators';
 
@@ -10,7 +10,7 @@ it('should respect maxlength', async () => {
     StringValidatorsModel.create({
       maxLength: 'this is too long'
     })
-  ).rejects.toBeInstanceOf(mongoose.Error.ValidationError);
+  ).rejects.toBeInstanceOf(Error.ValidationError);
 });
 
 it('should respect minlength', async () => {
@@ -19,7 +19,7 @@ it('should respect minlength', async () => {
     StringValidatorsModel.create({
       minLength: 'too short'
     })
-  ).rejects.toBeInstanceOf(mongoose.Error.ValidationError);
+  ).rejects.toBeInstanceOf(Error.ValidationError);
 });
 
 it('should trim', async () => {
@@ -51,7 +51,7 @@ it('should respect enum', async () => {
 
     fail('Expected to throw ValidationError!');
   } catch (err) {
-    expect(err).toBeInstanceOf(mongoose.Error.ValidationError);
+    expect(err).toBeInstanceOf(Error.ValidationError);
   }
 
   const doc = await StringValidatorsModel.create({

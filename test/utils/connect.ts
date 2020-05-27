@@ -1,4 +1,4 @@
-import * as mongoose from 'mongoose';
+import { Connection, ConnectionOptions, createConnection } from 'mongoose';
 import { config } from './config';
 
 interface ExtraConnectionConfig {
@@ -13,13 +13,13 @@ const staticOptions = {
   useCreateIndex: true,
   useUnifiedTopology: true,
   autoIndex: true
-} as mongoose.ConnectionOptions;
+} as ConnectionOptions;
 
 /**
  * Make a Connection to MongoDB
  */
-export async function connect(extraConfig: ExtraConnectionConfig = {}): Promise<mongoose.Connection> {
-  let connection: mongoose.Connection;
+export async function connect(extraConfig: ExtraConnectionConfig = {}): Promise<Connection> {
+  let connection: Connection;
 
   const options = Object.assign({}, staticOptions);
   if (config.Memory) {
@@ -36,10 +36,10 @@ export async function connect(extraConfig: ExtraConnectionConfig = {}): Promise<
   const connectionString = `${process.env.MONGO_URI}/${extraConfig.dbName ?? config.DataBase}`;
 
   if (extraConfig.createNewConnection) {
-    connection = mongoose.createConnection(connectionString, options);
+    connection = createConnection(connectionString, options);
   } else {
-    await mongoose.connect(connectionString, options);
-    connection = mongoose.connection;
+    await (await import('mongoose')).connect(connectionString, options);
+    connection = (await import('mongoose')).connection;
   }
 
   return connection;
@@ -50,7 +50,7 @@ export async function connect(extraConfig: ExtraConnectionConfig = {}): Promise<
  * @returns when it is disconnected
  */
 export async function disconnect(): Promise<void> {
-  await mongoose.disconnect();
+  await disconnect();
 
   return;
 }

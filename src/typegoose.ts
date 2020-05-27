@@ -1,16 +1,16 @@
 /* imports */
 import * as mongoose from 'mongoose';
 import 'reflect-metadata';
-import * as semver from 'semver';
+import { lt } from 'semver';
 import { format } from 'util';
 
 /* istanbul ignore next */
-if (semver.lt(mongoose.version, '5.9.14')) {
+if (lt(mongoose.version, '5.9.14')) {
   throw new Error('Please use mongoose 5.9.14 or higher');
 }
 
 /* istanbul ignore next */
-if (semver.lt(process.version.slice(1), '10.15.0')) {
+if (lt(process.version.slice(1), '10.15.0')) {
   logger.warn('You are using a NodeJS Version below 10.15.0, Please Upgrade!');
 }
 
@@ -156,8 +156,8 @@ export function addModelToTypegoose<U extends AnyParamConstructor<any>, QueryHel
     new Error(
       format(
         'It seems like "addModelToTypegoose" got called twice\n' +
-        'Or multiple classes with the same name are used, which is not supported!' +
-        '(Model Name: "%s")',
+          'Or multiple classes with the same name are used, which is not supported!' +
+          '(Model Name: "%s")',
         name
       )
     )
@@ -240,7 +240,7 @@ export function getDiscriminatorModelForClass<U extends AnyParamConstructor<any>
   if (models.has(name)) {
     return models.get(name) as ReturnModelType<U, QueryHelpers>;
   }
-  const sch = buildSchema(cl) as mongoose.Schema & { paths: any; };
+  const sch = buildSchema(cl) as mongoose.Schema & { paths: any };
 
   const discriminatorKey = sch.get('discriminatorKey');
   if (sch.path(discriminatorKey)) {

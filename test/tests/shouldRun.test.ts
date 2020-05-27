@@ -1,5 +1,5 @@
 import { omit } from 'lodash';
-import * as mongoose from 'mongoose';
+import { connection, model, Schema, Error, SchemaType, Types } from 'mongoose';
 
 import { DecoratorKeys } from '../../src/internal/constants';
 import { globalOptions } from '../../src/internal/data';
@@ -26,26 +26,26 @@ import type { IModelOptions, QueryMethod, QueryMethodMap, Ref, ReturnModelType }
 // tslint:disable:no-console
 
 it('should not error when trying to get model multiple times', () => {
-  class TEST { }
+  class TEST {}
   getModelForClass(TEST);
   getModelForClass(TEST);
 });
 
 it('should build multiple times', () => {
-  class TEST { }
+  class TEST {}
   buildSchema(TEST);
   buildSchema(TEST);
 });
 
 it('should use existingMongoose', async () => {
-  @modelOptions({ existingMongoose: mongoose })
-  class TESTexistingMongoose { }
+  @modelOptions({ existingMongoose: await import('mongoose') })
+  class TESTexistingMongoose {}
   expect(getModelForClass(TESTexistingMongoose)).not.toBeUndefined();
 });
 
 it('should use existingConnection', async () => {
-  @modelOptions({ existingConnection: mongoose.connection })
-  class TESTexistingConnection { }
+  @modelOptions({ existingConnection: connection })
+  class TESTexistingConnection {}
   expect(getModelForClass(TESTexistingConnection)).not.toBeUndefined();
 });
 
@@ -58,8 +58,8 @@ it('should make use of addModelToTypegoose', async () => {
   }
   const schema = buildSchema(TestAMTT);
   schema.add({ somesecondvalue: { type: String, required: true } });
-  const model = addModelToTypegoose(mongoose.model(TestAMTT.name, schema), TestAMTT);
-  const doc = await model.create({ somevalue: 'hello from SV', somesecondvalue: 'hello from SSV' } as TestAMTT);
+  const myModel = addModelToTypegoose(model(TestAMTT.name, schema), TestAMTT);
+  const doc = await myModel.create({ somevalue: 'hello from SV', somesecondvalue: 'hello from SSV' } as TestAMTT);
 
   expect(doc).not.toBeUndefined();
   expect(doc.somevalue).toEqual('hello from SV');
@@ -105,7 +105,7 @@ it('should work with Objects in Class [szokodiakos#54]', async () => {
 });
 
 it('simple test for assignMetadata', () => {
-  class TestAssignMetadata { }
+  class TestAssignMetadata {}
 
   assignMetadata(DecoratorKeys.ModelOptions, { testOption: 'hello' }, TestAssignMetadata);
 
@@ -116,19 +116,19 @@ it('simple test for assignMetadata', () => {
 });
 
 it('should just run with an non existing value in "assignMetadata"', () => {
-  class Dummy { }
+  class Dummy {}
   assignMetadata(DecoratorKeys.ModelOptions, { test: 'hello' }, Dummy);
   assignMetadata(DecoratorKeys.ModelOptions, undefined, Dummy);
   expect(Reflect.getMetadata(DecoratorKeys.ModelOptions, Dummy)).toEqual({ test: 'hello' });
 });
 
 it('should just run with an non existing value in "mergeMetadata"', () => {
-  class Dummy { }
+  class Dummy {}
   assignMetadata(DecoratorKeys.ModelOptions, { schemaOptions: { _id: false } }, Dummy);
   expect(mergeMetadata(DecoratorKeys.ModelOptions, undefined, Dummy)).toEqual({ schemaOptions: { _id: false } });
 });
 it('should not modify current metadata object in "mergeMetadata"', () => {
-  class Dummy { }
+  class Dummy {}
   const someData = { property: 'value' };
   Reflect.defineMetadata(DecoratorKeys.ModelOptions, someData, Dummy);
   mergeMetadata(DecoratorKeys.ModelOptions, { schemaOptions: { _id: false } }, Dummy);
@@ -136,14 +136,14 @@ it('should not modify current metadata object in "mergeMetadata"', () => {
 });
 
 it('should just run with an non existing value in "mergeSchemaOptions"', () => {
-  class Dummy { }
+  class Dummy {}
   assignMetadata(DecoratorKeys.ModelOptions, { schemaOptions: { _id: false } }, Dummy);
   expect(mergeSchemaOptions(undefined, Dummy)).toEqual({ _id: false });
 });
 
 it('merge options with assignMetadata', () => {
   @modelOptions({ schemaOptions: { timestamps: true, _id: false } })
-  class TestAssignMetadata { }
+  class TestAssignMetadata {}
 
   const model = getModelForClass(TestAssignMetadata, {
     schemaOptions: {
@@ -201,7 +201,7 @@ it('should allow self-referencing classes', async () => {
 
   expect(found.toJSON()).toEqual(doc2.toJSON());
   const schemaPath = SelfReferenceModel.schema.path('ref');
-  expect(schemaPath).toBeInstanceOf(mongoose.Schema.Types.ObjectId);
+  expect(schemaPath).toBeInstanceOf(Schema.Types.ObjectId);
   expect((schemaPath as any).options.ref).toEqual(getName(SelfReference));
 });
 
@@ -228,7 +228,7 @@ it('should make use of required as function [szokodiakos#247]', async () => {
     await model.create({ someProp: 3 } as RequiredFunction);
     fail('Expected to throw an "ValidationError"');
   } catch (err) {
-    expect(err).toBeInstanceOf(mongoose.Error.ValidationError);
+    expect(err).toBeInstanceOf(Error.ValidationError);
   }
 });
 
@@ -240,7 +240,7 @@ it('should use type "Buffer" [typegoose#88]', async () => {
 
   const model = getModelForClass(TestBuffer);
 
-  expect(model.schema.path('propy')).toBeInstanceOf(mongoose.Schema.Types.Buffer);
+  expect(model.schema.path('propy')).toBeInstanceOf(Schema.Types.Buffer);
 
   const { _id: id } = await model.create({ propy: Buffer.from('Hello') } as TestBuffer);
 
@@ -252,13 +252,13 @@ it('should use type "Buffer" [typegoose#88]', async () => {
 
 it('should use "type" as a last resort', async () => {
   class TestPropOptionType {
-    @prop({ type: mongoose.Schema.Types.Number })
+    @prop({ type: Schema.Types.Number })
     public propy: string;
   }
 
   const model = getModelForClass(TestPropOptionType);
 
-  expect(model.schema.path('propy')).toBeInstanceOf(mongoose.Schema.Types.Number);
+  expect(model.schema.path('propy')).toBeInstanceOf(Schema.Types.Number);
 
   const doc = new model({ propy: 100 });
 
@@ -268,7 +268,7 @@ it('should use "type" as a last resort', async () => {
 
 it('should run with Custom Types', async () => {
   // this test is a modified version of https://mongoosejs.com/docs/customschematypes.html
-  class CustomInt extends mongoose.SchemaType {
+  class CustomInt extends SchemaType {
     constructor(key: string, options: any) {
       super(key, options, 'CustomInt');
     }
@@ -277,7 +277,7 @@ it('should run with Custom Types', async () => {
       return Number(val);
     }
   }
-  (mongoose.Schema.Types as any).CustomInt = CustomInt;
+  (Schema.Types as any).CustomInt = CustomInt;
 
   class CustomIntClass {
     @prop({ required: true, type: CustomInt })
@@ -293,16 +293,16 @@ it('should run with Custom Types', async () => {
   expect(doc).not.toBeUndefined();
   const path = doc.schema.path('num');
   expect(path).not.toBeUndefined();
-  expect(path).not.toBeInstanceOf(mongoose.Schema.Types.Mixed);
+  expect(path).not.toBeInstanceOf(Schema.Types.Mixed);
   expect(path).toBeInstanceOf(CustomInt);
 });
 
 it('should not have the same options (modelOptions deep copy) [typegoose/typegoose#100]', () => {
   @modelOptions({ schemaOptions: { collection: '1' } })
-  class SOBase { }
+  class SOBase {}
 
   @modelOptions({ schemaOptions: { collection: '2' } })
-  class SOInheritedBase extends SOBase { }
+  class SOInheritedBase extends SOBase {}
 
   const refSOBase: IModelOptions = Reflect.getMetadata(DecoratorKeys.ModelOptions, SOBase);
   const refSOInheritedBase: IModelOptions = Reflect.getMetadata(DecoratorKeys.ModelOptions, SOInheritedBase);
@@ -334,7 +334,7 @@ it('should return undefined if model does not exists (getModelWithString)', () =
 it('should merge existingConnection correctly (overwrite)', () => {
   // @ts-expect-error
   @modelOptions({ existingConnection: { hello: 1 } })
-  class Dummy { }
+  class Dummy {}
 
   const out = mergeMetadata(DecoratorKeys.ModelOptions, { existingConnection: { hi: 1 } }, Dummy);
 
@@ -361,16 +361,16 @@ it('should use "_id" from ModelOptions if not in @prop options [typegoose/typego
   expect(doc.key).not.toHaveProperty('_id');
 });
 
-it('should also allow "mongoose.Types.Array<string>" as possible type', () => {
+it('should also allow "Types.Array<string>" as possible type', () => {
   class TypesArray {
     @arrayProp({ items: String })
-    public someString: mongoose.Types.Array<string>;
+    public someString: Types.Array<string>;
   }
 
   const schema = buildSchema(TypesArray);
 
-  expect(schema.path('someString')).toBeInstanceOf(mongoose.Schema.Types.Array);
-  expect((schema.path('someString') as any).caster).toBeInstanceOf(mongoose.Schema.Types.String);
+  expect(schema.path('someString')).toBeInstanceOf(Schema.Types.Array);
+  expect((schema.path('someString') as any).caster).toBeInstanceOf(Schema.Types.String);
 });
 
 it('should give a warning [typegoose/typegoose#152]', () => {
@@ -383,7 +383,7 @@ it('should give a warning [typegoose/typegoose#152]', () => {
 
   const schema = buildSchema(TestANY);
   expect((logger.warn as any).mock.calls.length).toEqual(1);
-  expect(schema.path('someANY')).toBeInstanceOf(mongoose.Schema.Types.Mixed);
+  expect(schema.path('someANY')).toBeInstanceOf(Schema.Types.Mixed);
 });
 
 it('should create 1D Array (createArrayFromDimensions)', () => {
@@ -417,7 +417,7 @@ it('should add "null" to the enum (addNullToEnum)', async () => {
   await doc.validate();
 
   const path: any = AddNullToEnumModel.schema.path('value');
-  expect(path).toBeInstanceOf(mongoose.Schema.Types.Number);
+  expect(path).toBeInstanceOf(Schema.Types.Number);
   expect(path.options.enum).toEqual([1, 2, 3, null]);
 });
 
@@ -448,8 +448,7 @@ it('should add query Methods', async () => {
 
   const metadata: QueryMethodMap = Reflect.getMetadata(DecoratorKeys.QueryMethod, QueryMethodsClass);
   expect(Array.from(metadata)).toEqual(
-    expect.arrayContaining([['findByName', findByName]]) &&
-    expect.arrayContaining([['findByLastname', findByLastname]])
+    expect.arrayContaining([['findByName', findByName]]) && expect.arrayContaining([['findByLastname', findByLastname]])
   );
 
   const doc = await QueryMethodsModel.create({ name: 'hello', lastname: 'world' });

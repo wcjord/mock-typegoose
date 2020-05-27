@@ -1,4 +1,4 @@
-import * as mongoose from 'mongoose';
+import { Error } from 'mongoose';
 
 import { ArrayValidatorEnumNumber, ArrayValidatorEnumString, ArrayValidators, ArrayValidatorsModel } from '../models/arrayValidators';
 
@@ -9,7 +9,7 @@ it('should respect maxlength [String]', async () => {
     ArrayValidatorsModel.create({
       maxLength: ['this is too long']
     })
-  ).rejects.toBeInstanceOf(mongoose.Error.ValidationError);
+  ).rejects.toBeInstanceOf(Error.ValidationError);
 });
 
 it('should respect minlength [String]', async () => {
@@ -17,7 +17,7 @@ it('should respect minlength [String]', async () => {
     ArrayValidatorsModel.create({
       minLength: ['too short']
     })
-  ).rejects.toBeInstanceOf(mongoose.Error.ValidationError);
+  ).rejects.toBeInstanceOf(Error.ValidationError);
 });
 
 it('should trim [String]', async () => {
@@ -51,7 +51,7 @@ it('should respect max [Number]', async () => {
     ArrayValidatorsModel.create({
       max: [4] // over 3
     })
-  ).rejects.toBeInstanceOf(mongoose.Error.ValidationError);
+  ).rejects.toBeInstanceOf(Error.ValidationError);
 });
 
 it('should respect min [Number]', async () => {
@@ -59,7 +59,7 @@ it('should respect min [Number]', async () => {
     ArrayValidatorsModel.create({
       min: [9] // under 10
     })
-  ).rejects.toBeInstanceOf(mongoose.Error.ValidationError);
+  ).rejects.toBeInstanceOf(Error.ValidationError);
 });
 
 it('should respect enum [String]', async () => {
@@ -70,7 +70,7 @@ it('should respect enum [String]', async () => {
 
     fail('Expected to throw ValidationError!');
   } catch (err) {
-    expect(err).toBeInstanceOf(mongoose.Error.ValidationError);
+    expect(err).toBeInstanceOf(Error.ValidationError);
   }
 
   const doc = await ArrayValidatorsModel.create({
@@ -94,7 +94,7 @@ it('should respect enum [Number]', async () => {
 
     fail('Expected to throw ValidationError!');
   } catch (err) {
-    expect(err).toBeInstanceOf(mongoose.Error.ValidationError);
+    expect(err).toBeInstanceOf(Error.ValidationError);
   }
 
   const doc = await ArrayValidatorsModel.create({
