@@ -2,9 +2,10 @@ import { MongoMemoryServer } from 'mongodb-memory-server';
 import { connect, disconnect, connection } from 'mongoose';
 import { logger } from '../src/logSettings';
 import { config } from './utils/config';
+import { isNodeJs } from '../src/internal/utils';
 
 export = async function globalSetup() {
-  if (!process || !process.env) {
+  if (!isNodeJs()) {
     return;
   }
   logger.setLevel('DEBUG');
@@ -18,7 +19,7 @@ export = async function globalSetup() {
     process.env.MONGO_URI = `mongodb://${config.IP}:${config.Port}`;
   }
 
-  await connect(`${process.env.MONGO_URI}/${config.DataBase}`, { useNewUrlParser: true, useUnifiedTopology: true });
+  await connect(`${process?.env.MONGO_URI}/${config.DataBase}`, { useNewUrlParser: true, useUnifiedTopology: true });
   await connection.db.dropDatabase();
   await disconnect();
 };

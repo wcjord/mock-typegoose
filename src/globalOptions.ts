@@ -1,6 +1,6 @@
 import { Severity } from './internal/constants';
 import { globalOptions } from './internal/data';
-import { assertion } from './internal/utils';
+import { assertion, isNodeJs } from './internal/utils';
 import { logger } from './logSettings';
 import type { IGlobalOptions } from './types';
 
@@ -29,8 +29,8 @@ export function parseENV(): void {
     globalOptions: {},
     options: {
       allowMixed:
-        process && process.env.TG_ALLOW_MIXED && process.env.TG_ALLOW_MIXED in Severity
-          ? mapValueToSeverity(process.env.TG_ALLOW_MIXED)
+        isNodeJs() && process?.env.TG_ALLOW_MIXED && process?.env.TG_ALLOW_MIXED in Severity
+          ? mapValueToSeverity(process?.env.TG_ALLOW_MIXED)
           : globalOptions.options?.allowMixed
     },
     set: true

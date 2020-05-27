@@ -224,6 +224,10 @@ export function includesAllVirtualPOP(options: VirtualOptions): options is Virtu
   return allVirtualoptions.every((v) => Object.keys(options).includes(v));
 }
 
+export function isNodeJs(): boolean {
+  return typeof module !== 'undefined' && module.exports;
+}
+
 /**
  * Merge value & existing Metadata & Save it to the class
  * Difference with "mergeMetadata" is that this one DOES save it to the class

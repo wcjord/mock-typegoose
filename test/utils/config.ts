@@ -1,4 +1,5 @@
 import { existsSync, readFileSync } from 'fs';
+import { isNodeJs } from '../../src/internal/utils';
 
 interface IConfig {
   Memory: boolean;
@@ -44,8 +45,9 @@ const configFINAL: Readonly<IConfig> = {
 /** Small callback for the tests below */
 function cb(text: string): void {
   // tslint:disable-next-line:no-console
+  if (!isNodeJs()) return;
   console.error(text);
-  process.exit(-1);
+  process?.exit(-1);
 }
 
 if (!configFINAL.Memory) {
