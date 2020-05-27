@@ -225,7 +225,7 @@ export function includesAllVirtualPOP(options: VirtualOptions): options is Virtu
 }
 
 export function isNodeJs(): boolean {
-  return typeof module !== 'undefined' && module.exports;
+  return typeof process === 'object' && typeof module !== 'undefined' && module.exports;
 }
 
 /**
