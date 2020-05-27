@@ -1,5 +1,5 @@
 import { DecoratorKeys } from './internal/constants';
-import { assignGlobalModelOptions, assignMetadata } from './internal/utils';
+import { assignGlobalModelOptions, assignMetadata, isNodeJs } from './internal/utils';
 import type { IModelOptions } from './types';
 
 /**
@@ -14,7 +14,7 @@ import type { IModelOptions } from './types';
  * ```
  */
 export function modelOptions(options: IModelOptions) {
-  if (typeof module !== 'undefined' && module.exports) {
+  if (!isNodeJs()) {
     return (target: any) => {};
   }
   return (target: any) => {

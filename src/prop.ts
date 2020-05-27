@@ -30,7 +30,8 @@ import {
   isWithStringValidate,
   isWithStringTransform,
   mapOptions,
-  isPrimitive
+  isPrimitive,
+  isNodeJs
 } from './internal/utils';
 import { logger } from './logSettings';
 import { buildSchema } from './typegoose';
@@ -392,7 +393,7 @@ function prop(
   options?: BasePropOptions | ArrayPropOptions | MapPropOptions | PropOptionsForNumber | PropOptionsForString | VirtualOptions,
   kind?: WhatIsIt
 ) {
-  if (typeof module !== 'undefined' && module.exports) {
+  if (!isNodeJs()) {
     return (...args: Parameters<typeof prop>) => {
       return (target: any, key: string) => {};
     };
@@ -479,7 +480,8 @@ function prop(
  * @deprecated use "prop"
  */
 function mapProp(options: MapPropOptions) {
-  if (typeof module !== 'undefined' && module.exports) {
+  if (!isNodeJs()) {
+    logger.warn('running in browser mode');
     return (...args: Parameters<typeof prop>) => {
       return (target: any, key: string) => {};
     };
@@ -494,7 +496,7 @@ function mapProp(options: MapPropOptions) {
  * @deprecated use "prop"
  */
 function arrayProp(options: ArrayPropOptions) {
-  if (typeof module !== 'undefined' && module.exports) {
+  if (!isNodeJs()) {
     return (...args: Parameters<typeof prop>) => {
       return (target: any, key: string) => {};
     };
