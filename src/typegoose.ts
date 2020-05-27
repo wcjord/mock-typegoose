@@ -4,12 +4,12 @@ import 'reflect-metadata';
 import { lt } from 'semver';
 
 /* istanbul ignore next */
-if (lt(mongoose.version, '5.9.14')) {
+if (mongoose && mongoose.version && lt(mongoose.version, '5.9.14')) {
   throw new Error('Please use mongoose 5.9.14 or higher');
 }
 
 /* istanbul ignore next */
-if (lt(process.version.slice(1), '10.15.0')) {
+if (process && process.version && lt(process.version.slice(1), '10.15.0')) {
   logger.warn('You are using a NodeJS Version below 10.15.0, Please Upgrade!');
 }
 
