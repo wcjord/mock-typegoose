@@ -33,7 +33,7 @@ export async function connect(extraConfig: ExtraConnectionConfig = {}): Promise<
   }
 
   // to not duplicate code
-  const connectionString = `${process.env.MONGO_URI}/${extraConfig.dbName ?? config.DataBase}`;
+  const connectionString = `${process?.env.MONGO_URI}/${extraConfig.dbName ?? config.DataBase}`;
 
   if (extraConfig.createNewConnection) {
     connection = createConnection(connectionString, options);
