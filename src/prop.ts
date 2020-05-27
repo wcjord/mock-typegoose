@@ -1,5 +1,4 @@
 import { Schema, Types } from 'mongoose';
-import { format, isPrimitive } from 'util';
 
 import { DecoratorKeys, WhatIsIt } from './internal/constants';
 import { schemas } from './internal/data';
@@ -30,7 +29,8 @@ import {
   isString,
   isWithStringValidate,
   isWithStringTransform,
-  mapOptions
+  mapOptions,
+  isPrimitive
 } from './internal/utils';
 import { logger } from './logSettings';
 import { buildSchema } from './typegoose';
@@ -98,7 +98,7 @@ export function _buildPropMetadata(input: DecoratedPropertyMetadata): void {
     rawOptions.ref = getType(rawOptions.ref);
     assertion(
       !isNullOrUndefined(rawOptions.ref),
-      new Error(format('Option "ref" for "%s.%s" was defined with an arrow-function, but the function returned null/undefined!', name, key))
+      new Error('Option "ref" for "%s.%s" was defined with an arrow-function, but the function returned null/undefined!')
     );
 
     rawOptions.ref = typeof rawOptions.ref === 'string' ? rawOptions.ref : getName(rawOptions.ref);
@@ -139,7 +139,7 @@ export function _buildPropMetadata(input: DecoratedPropertyMetadata): void {
   // use "Type" if it is an suitable ref-type, otherwise default back to "ObjectId"
   const refType = isAnRefType(Type) ? Type : Schema.Types.ObjectId;
   if ('ref' in rawOptions) {
-    assertion(!isNullOrUndefined(rawOptions.ref), new Error(format('Options "ref" is set, but is undefined/null! (%s.%s)', name, key)));
+    assertion(!isNullOrUndefined(rawOptions.ref), new Error('Options "ref" is set, but is undefined/null! (%s.%s)'));
     const ref = rawOptions.ref;
     delete rawOptions.ref;
 
@@ -166,7 +166,7 @@ export function _buildPropMetadata(input: DecoratedPropertyMetadata): void {
         };
         break;
       default:
-        throw new TypeError(format('"ref" is not supported for "%s"! (%s, %s)', whatis, getName(target), key));
+        throw new TypeError('"ref" is not supported for "%s"! (%s, %s)');
     }
 
     return;
@@ -174,7 +174,7 @@ export function _buildPropMetadata(input: DecoratedPropertyMetadata): void {
 
   const refPath = rawOptions.refPath;
   if (refPath) {
-    assertion(typeof refPath === 'string', new TypeError(format('"refPath" for "%s, %s" should be of type String!', getName(target), key)));
+    assertion(typeof refPath === 'string', new TypeError('"refPath" for "%s, %s" should be of type String!'));
 
     delete rawOptions.refPath;
 
@@ -201,7 +201,7 @@ export function _buildPropMetadata(input: DecoratedPropertyMetadata): void {
         };
         break;
       default:
-        throw new TypeError(format('"refPath" is not supported for "%s"! (%s, %s)', whatis, getName(target), key));
+        throw new TypeError('"refPath" is not supported for "%s"! (%s, %s)');
     }
 
     return;

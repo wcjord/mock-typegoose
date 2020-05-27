@@ -21,7 +21,7 @@ enum EConfig {
   MONGODB_AUTH = 'You should activate & use MongoDB Authentication!'
 }
 
-const env = process ? process.env : null; // just to write less
+const env = process?.env; // just to write less
 
 let path: string = env?.CONFIG ?? './test/config.json';
 path = existsSync(path) ? path : './test/config_default.json';

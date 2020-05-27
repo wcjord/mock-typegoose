@@ -1,6 +1,5 @@
 import { mergeWith, omit } from 'lodash';
 import * as mongoose from 'mongoose';
-import { format } from 'util';
 
 import { logger } from '../logSettings';
 import type {
@@ -500,7 +499,8 @@ export function warnMixed(target: any, key: string | symbol): void | never {
     case Severity.ALLOW:
       break;
     case Severity.ERROR:
-      throw new TypeError(format('Implicitly setting "Mixed" is not allowed! (%s, %s)', name, key));
+      throw new TypeError('Implicitly setting "Mixed" is not allowed! (%s, %s)');
+    // throw new TypeError(format('Implicitly setting "Mixed" is not allowed! (%s, %s)', name, key));
   }
 
   return; // always return, if "allowMixed" is not "ERROR"
@@ -536,7 +536,8 @@ export function createArrayFromDimensions(rawOptions: any, extra: any, name: str
   // dimensions start at 1 (not 0)
   const dim = typeof rawOptions.dim === 'number' ? rawOptions.dim : 1;
   if (dim < 1) {
-    throw new RangeError(format('"dim" needs to be higher than 0 (%s.%s)', name, key));
+    // throw new RangeError(format('"dim" needs to be higher than 0 (%s.%s)', name, key));
+    throw new RangeError('"dim" needs to be higher than 0 (%s.%s)');
   }
   delete rawOptions.dim; // delete this property to not actually put it as an option
   logger.info('createArrayFromDimensions called with %d dimensions', dim);
