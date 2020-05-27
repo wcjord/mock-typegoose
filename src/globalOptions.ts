@@ -29,10 +29,11 @@ export function parseENV(): void {
     globalOptions: {},
     options: {
       allowMixed:
-        process?.env.TG_ALLOW_MIXED && process?.env.TG_ALLOW_MIXED in Severity
-          ? mapValueToSeverity(process?.env.TG_ALLOW_MIXED)
+        process && process.env.TG_ALLOW_MIXED && process.env.TG_ALLOW_MIXED in Severity
+          ? mapValueToSeverity(process.env.TG_ALLOW_MIXED)
           : globalOptions.options?.allowMixed
-    }
+    },
+    set: true
   };
 
   setGlobalOptions(options);

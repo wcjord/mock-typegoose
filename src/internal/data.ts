@@ -13,5 +13,6 @@ export const constructors: Map<string, NewableFunction> = new Map();
 export const globalOptions: IGlobalOptions = {
   options: {
     allowMixed: Severity.WARN
-  }
+  },
+  set: false
 };

@@ -137,10 +137,7 @@ export interface BasePropOptions {
    * This may be needed if get/set is used
    * (this sets the type how it is saved to the DB)
    */
-  type?:
-  | DeferredFunc<AnyParamConstructor<any>>
-  | DeferredFunc<unknown>
-  | unknown;
+  type?: DeferredFunc<AnyParamConstructor<any>> | DeferredFunc<unknown> | unknown;
   /**
    * Make a property read-only
    * @example
@@ -282,10 +279,7 @@ export type RefType =
  * Reference another Model
  */
 // export type Ref<R, T extends RefType = mongoose.Types.ObjectId> = R | T; // old type, kept for easy revert
-export type Ref<
-  R,
-  T extends RefType = (R extends { _id?: RefType; } ? NonNullable<R['_id']> : mongoose.Types.ObjectId) | undefined
-  > = R | T;
+export type Ref<R, T extends RefType = (R extends { _id?: RefType } ? NonNullable<R['_id']> : mongoose.Types.ObjectId) | undefined> = R | T;
 
 /**
  * An Function type for a function that doesn't have any arguments and doesn't return anything
@@ -439,7 +433,6 @@ export interface IPluginsArray<T> {
  */
 export type VirtualPopulateMap = Map<string, any & VirtualOptions>;
 
-
 /**
  * Gets the signature (parameters with their types, and the return type) of a function type.
  *
@@ -490,6 +483,7 @@ export interface IGlobalOptions {
    * (There are currently none)
    */
   globalOptions?: {};
+  set: boolean;
 }
 
 export interface IObjectWithTypegooseFunction {

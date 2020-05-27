@@ -85,5 +85,6 @@
   "bugs": {
     "url": "https://github.com/typegoose/typegoose/issues"
   },
-  "homepage": "https://typegoose.github.io/typegoose/"
+  "homepage": "https://typegoose.github.io/typegoose/",
+  "sideEffects": false
 }

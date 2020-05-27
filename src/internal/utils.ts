@@ -17,6 +17,7 @@ import type {
 import { DecoratorKeys, Severity, WhatIsIt } from './constants';
 import { constructors, globalOptions, schemas } from './data';
 import { NoValidClass } from './errors';
+import { parseENV } from '../globalOptions';
 
 /**
  * Returns true, if the type is included in mongoose.Schema.Types
@@ -519,6 +520,9 @@ export function isNullOrUndefined(val: unknown): val is null | undefined {
  * @param target Target Class
  */
 export function assignGlobalModelOptions(target: any) {
+  if (!globalOptions.set) {
+    parseENV();
+  }
   if (isNullOrUndefined(Reflect.getMetadata(DecoratorKeys.ModelOptions, target))) {
     logger.info('Assigning global Schema Options to "%s"', getName(target));
     assignMetadata(DecoratorKeys.ModelOptions, omit(globalOptions, 'globalOptions'), target);
